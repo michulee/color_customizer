@@ -5,9 +5,3 @@
     filter: hue-rotate(136.969deg);
     /* background-color: pink; */
 }
-
-.box {
-    width: 100px;
-    height: 100px;
-    background-color: rgb(204, 0, 102);
-}

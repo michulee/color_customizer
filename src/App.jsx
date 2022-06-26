@@ -3,8 +3,11 @@ import './App.css';
 // import ColorThief from './node_modules/colorthief/dist/color-thief.mjs'
 import ColorThief from 'colorthief';
 import product from './assets/tshirt.png'
+import styled from 'styled-components';
 import { useEffect } from 'react';
 import { useState } from 'react';
+import { v4 as uuid } from 'uuid';
+
 
 
 // Notes
@@ -28,6 +31,123 @@ const [desiredColor, setDesiredColor] = useState([204, 0, 102]);
 const [desiredHue, setDesiredHue] = useState();
 
 const [rotation, setRotation] = useState();
+
+const ColorCustomizer = styled.div`
+border: 1px solid #000000;
+text-align: center;
+
+max-width: 300px;
+max-height: 235px;
+overflow-y: auto;
+`
+
+// how to style a dynamic list using styled components?
+const ColorContainer = styled.ul`
+list-style-type: none;
+display: flex;
+flex-direction: column;
+padding: 0;
+
+li > :first-child {
+  width: 100px;
+}
+`
+
+
+const colors = [
+  {
+    name: "Color #1",
+    colorValue: "#000000"
+  },
+  {
+    name: "Color #2",
+    colorValue: "#FFFFFF"
+  },
+  {
+    name: "Color #3",
+    colorValue: "rgb(204, 0, 102)"
+  },
+  {
+    name: "Color #2",
+    colorValue: "#FFFFFF"
+  },
+  {
+    name: "Color #2",
+    colorValue: "#FFFFFF"
+  }
+]
+const ColorList = ({data}) => {
+  const ListItem = styled.li`
+  display: flex;
+  align-items: center;
+  gap: 2rem;
+  `
+
+  const ColorBox = styled.div`
+  border: 1px solid rgba(0,0,0,0.3);
+  width: 30px;
+  height: 30px;
+  background-color: ${({color}) => color};
+  `
+
+  const ColorColumn = styled.div`
+  display: flex;
+  gap: 0.5rem;
+  align-items: center;
+  `
+
+  return data.map((e) => {
+    return(
+      <ListItem key={uuid()}>
+        <div>{e.name}</div>
+        <ColorColumn>
+          <ColorBox color={e.colorValue}/>
+          <div>{e.colorValue}</div>
+        </ColorColumn>
+      </ListItem>
+    ) 
+  })
+}
+
+const AddColor = () => {
+
+}
+const handleAddColor = (e) => {
+  // onclick, add object to arr with default color white and name "Unnamed Color"
+
+}
+
+const ColorPreview = styled.div`
+border: 1px solid rgba(0,0,0,0.3);
+`
+const ColorButtonsContainer = styled.div`
+list-style-type: none;
+display: flex;
+gap: 0.5rem;
+justify-content: center;
+`
+const ColorButtons = ({data}) => {
+  const ListItem = styled.div`
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  border: 3px solid rgba(0,0,0,0.3);
+  background-color: ${({color}) => color};
+  `
+  return data.map((e) => {
+    return(
+      <li key={uuid()}>
+        <ListItem color={e.colorValue}/>
+      </li>
+    ) 
+  })
+}
+
+const App = styled.div`
+@media screen and (min-width: 560px) {
+  display: flex;
+}
+`
 
   // empty dependency arr will make useEffect run only once after page is loaded
   // e.g. useEffect(() => {}, [setState]), then useEffect will run once after
@@ -111,15 +231,30 @@ const [rotation, setRotation] = useState();
   // 3 then lifecycle methods or hooks are initialized
   // 4 then DOM again prints with updated state.(that's why you have the objects in 2nd log) the whole process repeats when you reload your browser.
   return (
-    <div className="App">
-      <div className="image_wrapper"><img src={product} alt="" /></div>
-      <div className="image_wrapper"><img id="shirt" src={product} alt="" /></div>
-      <div className="box"></div>
-      {color && debug()}
+    // React doesn't allow <App> to be the outer element
+    <App>
+    {/* <> */}
+      <ColorCustomizer>
+        <h2>Color Presets</h2>
+        <ColorContainer>
+          <ColorList data={colors}/>
+        </ColorContainer>
+        <AddColor onClick={handleAddColor}/>
+      </ColorCustomizer>
+
+      <ColorPreview>
+        <div className="image_wrapper"><img src={product} alt="" /></div>
+        <div className="image_wrapper"><img id="shirt" src={product} alt="" /></div>
+        <ColorButtonsContainer>
+          <ColorButtons data={colors}/>
+        </ColorButtonsContainer>
+      </ColorPreview>
+      {/* {color && debug()} */}
 
       {/* {color && <div>{color}</div>} */}
       {/* {color ? <div>{color}</div> : null} */}
-    </div>
+    {/* </> */}
+    </App>
   );
 }
 
