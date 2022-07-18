@@ -32,6 +32,8 @@ const [desiredHue, setDesiredHue] = useState();
 
 const [rotation, setRotation] = useState();
 
+const [activeColor, setActiveColor] = useState(true);
+
 const ColorCustomizer = styled.div`
 border: 1px solid #000000;
 text-align: center;
@@ -76,6 +78,11 @@ const colors = [
     colorValue: "#FFFFFF"
   }
 ]
+
+const commonColors = {
+  "borderColor": "#333333",
+  "activeColor": "#FF0000"
+}
 const ColorList = ({data}) => {
   const ListItem = styled.li`
   display: flex;
@@ -84,7 +91,7 @@ const ColorList = ({data}) => {
   `
 
   const ColorBox = styled.div`
-  border: 1px solid rgba(0,0,0,0.3);
+  border: 2px solid #333333;
   width: 30px;
   height: 30px;
   background-color: ${({color}) => color};
@@ -126,18 +133,31 @@ display: flex;
 gap: 0.5rem;
 justify-content: center;
 `
-const ColorButtons = ({data}) => {
+const ColorButtons = ({data, common}) => {
   const ListItem = styled.div`
   width: 30px;
   height: 30px;
   border-radius: 50%;
-  border: 3px solid rgba(0,0,0,0.3);
+  border: 2px solid ${({active}) => active ? common.activeColor : common.borderColor};
   background-color: ${({color}) => color};
   `
-  return data.map((e) => {
+
+  const handleColorButton = (e) => {
+    // TODO
+    // click on button, activeColor highlight around button and also switch color render
+    // click on button, toggle class
+    // setActiveColor(false);
+
+  }
+
+  return data.map((e, i) => {
     return(
       <li key={uuid()}>
-        <ListItem color={e.colorValue}/>
+        {i === 0 ? 
+        <ListItem color={e.colorValue} onClick={() => handleColorButton()} active={activeColor}/> : 
+        <ListItem color={e.colorValue} onClick={handleColorButton} active={!activeColor}/>
+        }
+        {/* <ListItem color={e.colorValue} onClick={handleColorButton}/> */}
       </li>
     ) 
   })
@@ -246,7 +266,7 @@ const App = styled.div`
         <div className="image_wrapper"><img src={product} alt="" /></div>
         <div className="image_wrapper"><img id="shirt" src={product} alt="" /></div>
         <ColorButtonsContainer>
-          <ColorButtons data={colors}/>
+          {/* <ColorButtons data={colors} common={commonColors}/> */}
         </ColorButtonsContainer>
       </ColorPreview>
       {/* {color && debug()} */}
