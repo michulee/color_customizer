@@ -3,7 +3,7 @@ import './App.css';
 // import ColorThief from './node_modules/colorthief/dist/color-thief.mjs'
 import ColorThief from 'colorthief';
 import product from './assets/tshirt.png'
-import styled from 'styled-components';
+import styled from 'styled-components/macro'; // 'styled-components/macro' instead of 'styled-components' for babel plugin to see name of css in dev tools
 import { useEffect } from 'react';
 import { useState } from 'react';
 import { v4 as uuid } from 'uuid';
@@ -35,12 +35,20 @@ const [rotation, setRotation] = useState();
 const [activeColor, setActiveColor] = useState(true);
 
 const ColorCustomizer = styled.div`
-border: 1px solid #000000;
+// border: 1px solid #000000;
 text-align: center;
 
-max-width: 300px;
-max-height: 235px;
-overflow-y: auto;
+// max-width: 300px;
+max-height: 245px;
+overflow-y: scroll;
+
+@media screen and (min-width: 560px) {
+  min-width: 330px;
+  max-height: 100%;
+  // border-radius: 5px;
+  // box-shadow:  0px 12px 24px -12px rgba(0, 0, 0, 0.5);
+  // -webkit-box-shadow:  0px 12px 24px -12px rgba(0, 0, 0, 0.5);
+}
 `
 
 // how to style a dynamic list using styled components?
@@ -49,33 +57,42 @@ list-style-type: none;
 display: flex;
 flex-direction: column;
 padding: 0;
+gap: 5px;
 
 li > :first-child {
   width: 100px;
 }
+li > :nth-child(2) {
+  width: 200px;
+}
 `
 
-
+// TODO refactor for having multiple color value types
 const colors = [
   {
     name: "Color #1",
-    colorValue: "#000000"
+    colorValue: "#000000",
+    colorValueType: "hex",
   },
   {
     name: "Color #2",
-    colorValue: "#FFFFFF"
+    colorValue: "#FFFFFF",
+    colorValueType: "hex",
   },
   {
     name: "Color #3",
-    colorValue: "rgb(204, 0, 102)"
+    colorValue: "rgb(204, 0, 102)",
+    colorValueType: "rgb",
   },
   {
     name: "Color #2",
-    colorValue: "#FFFFFF"
+    colorValue: "#FFFFFF",
+    colorValueType: "hex",
   },
   {
     name: "Color #2",
-    colorValue: "#FFFFFF"
+    colorValue: "#FFFFFF",
+    colorValueType: "hex",
   }
 ]
 
@@ -88,6 +105,14 @@ const ColorList = ({data}) => {
   display: flex;
   align-items: center;
   gap: 2rem;
+  margin: 0 auto;
+  cursor: pointer;
+  border: 2px solid transparent;
+
+  :hover, :focus {
+    // background-color: rgba(0,0,0,0.1);
+    border: 2px solid #007aff;
+  }
   `
 
   const ColorBox = styled.div`
@@ -106,10 +131,10 @@ const ColorList = ({data}) => {
   return data.map((e) => {
     return(
       <ListItem key={uuid()}>
-        <div>{e.name}</div>
+        <div aria-label={"color name is " + e.name}>{e.name}</div>
         <ColorColumn>
           <ColorBox color={e.colorValue}/>
-          <div>{e.colorValue}</div>
+          <div aria-label={e.colorValueType + "value " + e.colorValue}>{e.colorValue}</div>
         </ColorColumn>
       </ListItem>
     ) 
@@ -125,7 +150,23 @@ const handleAddColor = (e) => {
 }
 
 const ColorPreview = styled.div`
-border: 1px solid rgba(0,0,0,0.3);
+// border: 1px solid rgba(0,0,0,0.3);
+// height: 100%;
+// display: flex;
+
+@media screen and (min-width: 560px) {
+  // max-width: 600px;
+  // height: 100%;
+  max-height: 500px;
+  border-radius: 5px;
+  margin: 20px 0;
+
+  // box-shadow:  0px 12px 24px -12px rgba(0, 0, 0, 0.5);
+  // -webkit-box-shadow:  0px 12px 24px -12px rgba(0, 0, 0, 0.5);
+
+  box-shadow:  0px 12px 19px -3px rgba(0, 0, 0, 0.5);
+  -webkit-box-shadow:  0px 12px 19px -3px rgba(0, 0, 0, 0.5);
+}
 `
 const ColorButtonsContainer = styled.div`
 list-style-type: none;
@@ -164,8 +205,13 @@ const ColorButtons = ({data, common}) => {
 }
 
 const App = styled.div`
+display: flex;
+flex-direction: column;
+height: 100vh;
+gap: 50px;
 @media screen and (min-width: 560px) {
-  display: flex;
+  flex-direction: row;
+  // gap: 0;
 }
 `
 
@@ -263,8 +309,11 @@ const App = styled.div`
       </ColorCustomizer>
 
       <ColorPreview>
-        <div className="image_wrapper"><img src={product} alt="" /></div>
+        {/* original pic */}
+        {/* <div className="image_wrapper"><img src={product} alt="" /></div> */}
+        {/* altered pic */}
         <div className="image_wrapper"><img id="shirt" src={product} alt="" /></div>
+
         <ColorButtonsContainer>
           {/* <ColorButtons data={colors} common={commonColors}/> */}
         </ColorButtonsContainer>
