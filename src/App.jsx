@@ -32,7 +32,9 @@ const [desiredHue, setDesiredHue] = useState();
 
 const [rotation, setRotation] = useState();
 
-const [activeColor, setActiveColor] = useState(true);
+const [activeColorBoolean, setActiveColorBoolean] = useState(true);
+
+const [activeColor, setActiveColor] = useState("#000000");
 
 const ColorCustomizer = styled.div`
 // border: 1px solid #000000;
@@ -128,9 +130,14 @@ const ColorList = ({data}) => {
   align-items: center;
   `
 
+  const handleColorSelection = (colorValue) => {
+    console.log("handleColorSelection: " + colorValue)
+    setActiveColor(colorValue);
+  }
+
   return data.map((e) => {
     return(
-      <ListItem key={uuid()}>
+      <ListItem key={uuid()} onClick={() => handleColorSelection(e.colorValue)}>
         <div aria-label={"color name is " + e.name}>{e.name}</div>
         <ColorColumn>
           <ColorBox color={e.colorValue}/>
@@ -183,20 +190,28 @@ const ColorButtons = ({data, common}) => {
   background-color: ${({color}) => color};
   `
 
-  const handleColorButton = (e) => {
+  const handleColorButton = (colorValue) => {
     // TODO
     // click on button, activeColor highlight around button and also switch color render
     // click on button, toggle class
-    // setActiveColor(false);
+    console.log("handleColorSelection: " + colorValue)
+    setActiveColor(colorValue);
 
+    // NOT the previous state
+    // setActiveColorBoolean(state => !state)
   }
 
   return data.map((e, i) => {
     return(
       <li key={uuid()}>
-        {i === 0 ? 
-        <ListItem color={e.colorValue} onClick={() => handleColorButton()} active={activeColor}/> : 
-        <ListItem color={e.colorValue} onClick={handleColorButton} active={!activeColor}/>
+        {/* i === 0 is initial, change active onclick */}
+        {console.log("active is: " + activeColorBoolean)}
+        {
+        i === 0 ? 
+        <ListItem color={e.colorValue} onClick={() => handleColorButton(e.colorValue)} active={activeColorBoolean}/> 
+        : 
+        <ListItem color={e.colorValue} onClick={() => handleColorButton(e.colorValue)} active={!activeColorBoolean}/>
+        // null
         }
         {/* <ListItem color={e.colorValue} onClick={handleColorButton}/> */}
       </li>
@@ -223,6 +238,7 @@ gap: 50px;
   // https://stackoverflow.com/a/62980056
   useEffect(() => {
     const colorThief = new ColorThief();
+
     const img = document.querySelector('#shirt');
     img.crossOrigin = "anonymous";
     if (img.complete) {
@@ -236,6 +252,8 @@ gap: 50px;
         //  this.mopl = colorThief.getColor(img)
        });
      }
+
+    console.log("selectedColor: " + activeColor)
   }, [])
 
   function rgb2hue(r, g, b) {
@@ -315,7 +333,7 @@ gap: 50px;
         <div className="image_wrapper"><img id="shirt" src={product} alt="" /></div>
 
         <ColorButtonsContainer>
-          {/* <ColorButtons data={colors} common={commonColors}/> */}
+          <ColorButtons data={colors} common={commonColors}/>
         </ColorButtonsContainer>
       </ColorPreview>
       {/* {color && debug()} */}
