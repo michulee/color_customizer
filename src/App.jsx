@@ -32,7 +32,7 @@ const [desiredHue, setDesiredHue] = useState();
 
 const [rotation, setRotation] = useState();
 
-const [activeColorBoolean, setActiveColorBoolean] = useState(true);
+const [activeColorBoolean, setActiveColorBoolean] = useState(false);
 
 const [activeColor, setActiveColor] = useState("#000000");
 
@@ -198,19 +198,18 @@ const ColorButtons = ({data, common}) => {
     setActiveColor(colorValue);
 
     // NOT the previous state
-    // setActiveColorBoolean(state => !state)
+    setActiveColorBoolean(state => !state)
   }
 
   return data.map((e, i) => {
     return(
       <li key={uuid()}>
         {/* i === 0 is initial, change active onclick */}
-        {console.log("active is: " + activeColorBoolean)}
         {
-        i === 0 ? 
-        <ListItem color={e.colorValue} onClick={() => handleColorButton(e.colorValue)} active={activeColorBoolean}/> 
-        : 
-        <ListItem color={e.colorValue} onClick={() => handleColorButton(e.colorValue)} active={!activeColorBoolean}/>
+        // i === 0 ? 
+        // <ListItem color={e.colorValue} onClick={() => handleColorButton(e.colorValue)} active={activeColorBoolean}/> 
+        // : 
+        <ListItem color={e.colorValue} onClick={() => handleColorButton(e.colorValue)} active={activeColorBoolean}/>
         // null
         }
         {/* <ListItem color={e.colorValue} onClick={handleColorButton}/> */}
