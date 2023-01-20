@@ -43,6 +43,7 @@ text-align: center;
 // max-width: 300px;
 max-height: 245px;
 overflow-y: scroll;
+background-color: #f2f2f2;
 
 @media screen and (min-width: 560px) {
   min-width: 330px;
@@ -59,7 +60,8 @@ list-style-type: none;
 display: flex;
 flex-direction: column;
 padding: 0;
-gap: 5px;
+// gap: 5px;
+margin: 0;
 
 li > :first-child {
   width: 100px;
@@ -95,7 +97,12 @@ const colors = [
     name: "Color #2",
     colorValue: "#FFFFFF",
     colorValueType: "hex",
-  }
+  },
+  {
+    name: "Color #2",
+    colorValue: "#FFFFFF",
+    colorValueType: "hex",
+  },
 ]
 
 const commonColors = {
@@ -166,7 +173,7 @@ const ColorPreview = styled.div`
   // height: 100%;
   max-height: 500px;
   border-radius: 5px;
-  margin: 20px 0;
+  margin: 20px;
 
   // box-shadow:  0px 12px 24px -12px rgba(0, 0, 0, 0.5);
   // -webkit-box-shadow:  0px 12px 24px -12px rgba(0, 0, 0, 0.5);
@@ -180,6 +187,7 @@ list-style-type: none;
 display: flex;
 gap: 0.5rem;
 justify-content: center;
+margin: 20px;
 `
 const ColorButtons = ({data, common}) => {
   const ListItem = styled.div`
@@ -222,10 +230,10 @@ const App = styled.div`
 display: flex;
 flex-direction: column;
 height: 100vh;
-gap: 50px;
+gap: 30px;
 @media screen and (min-width: 560px) {
   flex-direction: row;
-  // gap: 0;
+  gap: 0;
 }
 `
 
