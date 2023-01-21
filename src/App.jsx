@@ -8,7 +8,8 @@ import { useEffect } from 'react';
 import { useState } from 'react';
 import { v4 as uuid } from 'uuid';
 
-
+// FIXME - current method not the most accurate
+// https://stackoverflow.com/questions/29037023/how-to-calculate-required-hue-rotate-to-generate-specific-colour
 
 // Notes
 // https://github.com/lokesh/color-thief/issues/206#issuecomment-951182152
@@ -314,7 +315,6 @@ gap: 30px;
 
   const Product = ({data, common, id, src}) => {
     const getRGBValue = (rgbValue) => {
-      // TODO remove rgb(...) keep only the numbers
       const beg = rgbValue.indexOf("(")
       const end = rgbValue.indexOf(")")
 
@@ -331,7 +331,6 @@ gap: 30px;
         const [r,g,b] = originalColor;
         const hue = rgb2hue(r,g,b);
         console.log("hue: ", hue);
-        // setHue(hue);
     
         const [dr, dg, db] = getRGBValue(activeColor)
         const desiredHue = rgb2hue(dr, dg, db);
