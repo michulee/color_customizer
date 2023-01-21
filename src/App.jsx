@@ -31,14 +31,13 @@ const colors = [
     colorValueType: "transparent",
   },
   {
-    name: "Black",
-    // colorValue: "rgb(0  ,  0,0)",
-    colorValue: "rgb(1  ,  2,3)",
+    name: "Green",
+    colorValue: "rgb(13, 177, 0)",
     colorValueType: "rgb",
   },
   {
-    name: "White",
-    colorValue: "rgb(256, 256, 256)",
+    name: "Yellow",
+    colorValue: "rgb(255, 177, 0)",
     colorValueType: "rgb",
   },
   {
@@ -275,8 +274,6 @@ gap: 30px;
         //  this.mopl = colorThief.getColor(img)
        });
      }
-
-    console.log("selectedColor: " + activeColor)
   }, [])
 
   function rgb2hue(r, g, b) {
@@ -322,9 +319,6 @@ gap: 30px;
       const end = rgbValue.indexOf(")")
 
       const trimEdges = rgbValue.slice(beg+1, end);
-      console.log("trimEdges: ", trimEdges)
-      console.log("testTrim: ", trimEdges.split(/( *, *)/g).filter((e, i) => i%2 === 0))
-
       const [dr, dg, db] = trimEdges.split(/( *, *)/g).filter((e, i) => i%2 === 0);
 
       return [dr, dg, db]
@@ -339,10 +333,7 @@ gap: 30px;
         console.log("hue: ", hue);
         // setHue(hue);
     
-        // TODO fix array input
-        console.log("activeColor: ", activeColor)
         const [dr, dg, db] = getRGBValue(activeColor)
-        console.log(dr, dg, db);
         const desiredHue = rgb2hue(dr, dg, db);
         console.log("desiredHue: ", desiredHue)
     
