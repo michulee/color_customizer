@@ -3,8 +3,9 @@
     /* margin: 0 auto; */
 }
 .image_wrapper #shirt {
-    filter: hue-rotate(136.969deg);
+    /* filter: hue-rotate(136.969deg); */
     /* background-color: pink; */
+
     display: block;
     object-fit: contain;
     width: 100%;

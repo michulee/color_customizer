@@ -23,18 +23,56 @@ import { v4 as uuid } from 'uuid';
  * use filter HSL value on image
  */
 
+// 5,161,203
+const colors = [
+  {
+    name: "Default",
+    colorValue: "transparent",
+    colorValueType: "transparent",
+  },
+  {
+    name: "Black",
+    // colorValue: "rgb(0  ,  0,0)",
+    colorValue: "rgb(1  ,  2,3)",
+    colorValueType: "rgb",
+  },
+  {
+    name: "White",
+    colorValue: "rgb(256, 256, 256)",
+    colorValueType: "rgb",
+  },
+  {
+    name: "Pink",
+    colorValue: "rgb(204, 0, 102)",
+    colorValueType: "rgb",
+  }
+]
+
+const commonColors = {
+  "borderColor": "#333333",
+  "activeColor": "#FF0000"
+}
+
 const App = () => {
-const [color, setColor] = useState();
+  // TODO keep rgb color 5,161,203 as reference for hue rotation
+const [color, setColor] = useState(colors[1].colorValue);
+const [activeColor, setActiveColor] = useState(colors[1].colorValue);
+
+// originalColor is converted to hue in getHueRotation()
+const [originalColor, setOriginalColor] = useState();
 const [hue, setHue] = useState();
 
-const [desiredColor, setDesiredColor] = useState([204, 0, 102]);
+
+// use activeColor instead
+// const [desiredColor, setDesiredColor] = useState([204, 0, 102]);
+// const [desiredColor, setDesiredColor] = useState(activeColor);
+// const [desiredColor, setDesiredColor] = useState(colors[1].colorValue);
 const [desiredHue, setDesiredHue] = useState();
 
 const [rotation, setRotation] = useState();
 
 const [activeColorBoolean, setActiveColorBoolean] = useState(false);
 
-const [activeColor, setActiveColor] = useState("#000000");
 
 const ColorCustomizer = styled.div`
 // border: 1px solid #000000;
@@ -67,48 +105,12 @@ li > :first-child {
   width: 100px;
 }
 li > :nth-child(2) {
-  width: 200px;
+  width: 50px;
 }
 `
 
-// TODO refactor for having multiple color value types
-const colors = [
-  {
-    name: "Color #1",
-    colorValue: "#000000",
-    colorValueType: "hex",
-  },
-  {
-    name: "Color #2",
-    colorValue: "#FFFFFF",
-    colorValueType: "hex",
-  },
-  {
-    name: "Color #3",
-    colorValue: "rgb(204, 0, 102)",
-    colorValueType: "rgb",
-  },
-  {
-    name: "Color #2",
-    colorValue: "#FFFFFF",
-    colorValueType: "hex",
-  },
-  {
-    name: "Color #2",
-    colorValue: "#FFFFFF",
-    colorValueType: "hex",
-  },
-  {
-    name: "Color #2",
-    colorValue: "#FFFFFF",
-    colorValueType: "hex",
-  },
-]
 
-const commonColors = {
-  "borderColor": "#333333",
-  "activeColor": "#FF0000"
-}
+
 const ColorList = ({data}) => {
   const ListItem = styled.li`
   display: flex;
@@ -140,6 +142,9 @@ const ColorList = ({data}) => {
   const handleColorSelection = (colorValue) => {
     console.log("handleColorSelection: " + colorValue)
     setActiveColor(colorValue);
+    if(colorValue) {
+      console.log("activeColor: ", colorValue)
+    }
   }
 
   return data.map((e) => {
@@ -147,8 +152,7 @@ const ColorList = ({data}) => {
       <ListItem key={uuid()} onClick={() => handleColorSelection(e.colorValue)}>
         <div aria-label={"color name is " + e.name}>{e.name}</div>
         <ColorColumn>
-          <ColorBox color={e.colorValue}/>
-          <div aria-label={e.colorValueType + "value " + e.colorValue}>{e.colorValue}</div>
+          <ColorBox color={e.colorValue} aria-label={e.colorValueType + "value " + e.colorValue}/>
         </ColorColumn>
       </ListItem>
     ) 
@@ -226,6 +230,16 @@ const ColorButtons = ({data, common}) => {
   })
 }
 
+const ProductWrapper = styled.div`
+@media screen and (min-width: 560px) {
+  max-width: 600px;
+  height: 100%;
+  margin: 0 auto;
+}
+`
+
+
+
 const App = styled.div`
 display: flex;
 flex-direction: column;
@@ -249,12 +263,14 @@ gap: 30px;
     const img = document.querySelector('#shirt');
     img.crossOrigin = "anonymous";
     if (img.complete) {
-      setColor(colorThief.getColor(img));
+      // setColor(colorThief.getColor(img));
+      setOriginalColor(colorThief.getColor(img));
       // colorThief.getColor(img);
       //  this.mopl = colorThief.getColor(img)
      } else {
        img.addEventListener('load', () => {
-        setColor(colorThief.getColor(img));
+        // setColor(colorThief.getColor(img));
+        setOriginalColor(colorThief.getColor(img));
         // colorThief.getColor(img);
         //  this.mopl = colorThief.getColor(img)
        });
@@ -299,6 +315,61 @@ gap: 30px;
     return hue * 60; // hue is in [0,6], scale it up
   }
 
+  const Product = ({data, common, id, src}) => {
+    const getRGBValue = (rgbValue) => {
+      // TODO remove rgb(...) keep only the numbers
+      const beg = rgbValue.indexOf("(")
+      const end = rgbValue.indexOf(")")
+
+      const trimEdges = rgbValue.slice(beg+1, end);
+      console.log("trimEdges: ", trimEdges)
+      console.log("testTrim: ", trimEdges.split(/( *, *)/g).filter((e, i) => i%2 === 0))
+
+      const [dr, dg, db] = trimEdges.split(/( *, *)/g).filter((e, i) => i%2 === 0);
+
+      return [dr, dg, db]
+    }
+
+    const getHueRotation = (rgbValue) => {
+      if(originalColor && activeColor) {
+        console.log('inside function')
+        console.log("color: ", originalColor);
+        const [r,g,b] = originalColor;
+        const hue = rgb2hue(r,g,b);
+        console.log("hue: ", hue);
+        // setHue(hue);
+    
+        // TODO fix array input
+        console.log("activeColor: ", activeColor)
+        const [dr, dg, db] = getRGBValue(activeColor)
+        console.log(dr, dg, db);
+        const desiredHue = rgb2hue(dr, dg, db);
+        console.log("desiredHue: ", desiredHue)
+    
+        const rotation = desiredHue - hue;
+        console.log("rotation: ", rotation);
+    
+        return rotation;
+      }
+    }
+  
+    const Image = styled.img`
+      /* filter: hue-rotate(136.969deg); */
+      /* background-color: pink; */
+    
+      filter: hue-rotate(${(activeColor === "transparent" ? 0 : getHueRotation(activeColor))}deg);
+    
+      display: block;
+      object-fit: contain;
+      width: 100%;
+      height: 100%;
+      padding: 20px 0;
+    `
+  
+  
+    return <Image id={id} src={src}/>;
+  }
+
   const debug = () => {
     console.log('inside function')
     console.log(color);
@@ -307,12 +378,12 @@ gap: 30px;
     console.log("hue: ", hue);
     // setHue(hue);
 
-    const [dr, dg, db] = desiredColor;
+    const [dr, dg, db] = activeColor;
     const desiredHue = rgb2hue(dr, dg, db);
     console.log("desiredHue: ", desiredHue)
 
     const rotation = desiredHue - hue;
-    console.log("roration: ", rotation);
+    console.log("rotation: ", rotation);
   }
 
   // https://stackoverflow.com/a/66721731
@@ -335,14 +406,32 @@ gap: 30px;
 
       <ColorPreview>
         {/* original pic */}
-        {/* <div className="image_wrapper"><img src={product} alt="" /></div> */}
+        {/* <ImageWrapper><img src={product} alt="" /></ImageWrapper> */}
         {/* altered pic */}
-        <div className="image_wrapper"><img id="shirt" src={product} alt="" /></div>
+        {/* <ImageWrapper><img id="shirt" src={product} alt="" /></ImageWrapper> */}
+        {/* <div className="image_wrapper"><img id="shirt" src={product} alt="" /></div> */}
+        <div className="image_wrapper"><Product id="shirt" src={product} alt="" /></div>
 
-        <ColorButtonsContainer>
-          <ColorButtons data={colors} common={commonColors}/>
-        </ColorButtonsContainer>
+        {/* <ProductWrapper> */}
+          {/* <Product/> */}
+        {/* </ProductWrapper> */}
+
+        {/* <ColorButtonsContainer> */}
+          {/* <ColorButtons data={colors} common={commonColors}/> */}
+        {/* </ColorButtonsContainer> */}
       </ColorPreview>
+
+      {/* TODO */}
+      {/* returns rgb value from ColorThief API */}
+      {/* rgb(5, 161,203) is the base blue color */}
+      {/* TODO now I need to turn the base color into one of the presets */}
+      {/* 
+      - follow debug()
+      - insert rgb value of color preset to return the hue rotation value
+      - insert hue rotation value as a property value
+       */}
+      {/* {console.log(color)} */}
+
       {/* {color && debug()} */}
 
       {/* {color && <div>{color}</div>} */}
