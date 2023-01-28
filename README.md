@@ -2,14 +2,21 @@
 
 [Color Customizer](https://michulee.com/) is an application that dynamically changes the hue color of an SVG image using its average color and converting it into your desired color.
 
-## Table of content
+***Color Customizer is a project in-progress***
 
+
+
+## Table of Contents
+- [How It Works](#how-it-works)
 - [Installation](#installation)
     - [Node.js](#Node.js)
 - [Available Scripts](#available-scripts)
     - [`npm run deploy`](#npm-run-deploy)
     - [`npm start`](#npm-start)
 	- [`npm run build`](#npm-run-build)
+
+## How It Works
+The `colorthief` API returns the average color of an SVG image in an RGB value where it gets converted into a hue value. Then, the program takes the color preset value and also converts it into a hue value. We take the hue value difference from the image and the color preset- giving us the hue rotation value needed for the `filter` CSS property. The image will change its color based off of the `hue-rotate` CSS value. 
 
 ## Installation
 

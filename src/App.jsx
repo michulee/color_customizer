@@ -14,17 +14,6 @@ import { v4 as uuid } from 'uuid';
 // Notes
 // https://github.com/lokesh/color-thief/issues/206#issuecomment-951182152
 
-// TODO list
-/**
- * ✅ colorthief works, returning rgb value
- * ✅ convert rgb to HSL value (converted only to hue)
- * figure out how to set both states in react in useEffect
- * get desired color in rgb (204, 0, 102) a dark pink
- * convert desired color from rgb to hsl
- * use filter HSL value on image
- */
-
-// 5,161,203
 const colors = [
   {
     name: "Default",
@@ -48,28 +37,11 @@ const colors = [
   }
 ]
 
-const commonColors = {
-  "borderColor": "#333333",
-  "activeColor": "#FF0000"
-}
-
 const App = () => {
-  // TODO keep rgb color 5,161,203 as reference for hue rotation
 const [color, setColor] = useState(colors[1].colorValue);
 const [activeColor, setActiveColor] = useState(colors[1].colorValue);
 
-// originalColor is converted to hue in getHueRotation()
 const [originalColor, setOriginalColor] = useState();
-const [hue, setHue] = useState();
-
-
-// use activeColor instead
-// const [desiredColor, setDesiredColor] = useState([204, 0, 102]);
-// const [desiredColor, setDesiredColor] = useState(activeColor);
-// const [desiredColor, setDesiredColor] = useState(colors[1].colorValue);
-const [desiredHue, setDesiredHue] = useState();
-
-const [rotation, setRotation] = useState();
 
 const [activeColorBoolean, setActiveColorBoolean] = useState(false);
 
@@ -203,9 +175,6 @@ const ColorButtons = ({data, common}) => {
   `
 
   const handleColorButton = (colorValue) => {
-    // TODO
-    // click on button, activeColor highlight around button and also switch color render
-    // click on button, toggle class
     console.log("handleColorSelection: " + colorValue)
     setActiveColor(colorValue);
 
@@ -255,7 +224,7 @@ gap: 30px;
   // e.g. useEffect(() => {}, [setState]), then useEffect will run once after
   // page is loaded and when the variable(s) in the array gets updated
 
-  // TODO how to wait for two states to set????????
+  // TODO how to wait for two states to set?
   // https://stackoverflow.com/a/62980056
   useEffect(() => {
     const colorThief = new ColorThief();
@@ -263,16 +232,10 @@ gap: 30px;
     const img = document.querySelector('#shirt');
     img.crossOrigin = "anonymous";
     if (img.complete) {
-      // setColor(colorThief.getColor(img));
       setOriginalColor(colorThief.getColor(img));
-      // colorThief.getColor(img);
-      //  this.mopl = colorThief.getColor(img)
      } else {
        img.addEventListener('load', () => {
-        // setColor(colorThief.getColor(img));
         setOriginalColor(colorThief.getColor(img));
-        // colorThief.getColor(img);
-        //  this.mopl = colorThief.getColor(img)
        });
      }
   }, [])
@@ -383,7 +346,6 @@ gap: 30px;
   // 3 then lifecycle methods or hooks are initialized
   // 4 then DOM again prints with updated state.(that's why you have the objects in 2nd log) the whole process repeats when you reload your browser.
   return (
-    // React doesn't allow <App> to be the outer element
     <App>
     {/* <> */}
       <ColorCustomizer>
@@ -411,21 +373,7 @@ gap: 30px;
         {/* </ColorButtonsContainer> */}
       </ColorPreview>
 
-      {/* TODO */}
-      {/* returns rgb value from ColorThief API */}
-      {/* rgb(5, 161,203) is the base blue color */}
-      {/* TODO now I need to turn the base color into one of the presets */}
-      {/* 
-      - follow debug()
-      - insert rgb value of color preset to return the hue rotation value
-      - insert hue rotation value as a property value
-       */}
-      {/* {console.log(color)} */}
-
       {/* {color && debug()} */}
-
-      {/* {color && <div>{color}</div>} */}
-      {/* {color ? <div>{color}</div> : null} */}
     {/* </> */}
     </App>
   );
